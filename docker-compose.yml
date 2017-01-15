@@ -1,0 +1,95 @@
+version: "2"
+services:
+  redis:
+    container_name: rewards_redis
+    image: redis:3.2-alpine
+    volumes:
+      - ./var/redis_data:/data
+  node1:
+    container_name: node1
+    build:
+      context: ./
+      dockerfile: ./docker/node/Dockerfile
+    environment:
+        NODE_ENV: prod
+        EXPRESS_PORT: 8081
+    links:
+      - redis
+    volumes:
+      - ./package.json:/usr/src/app/package.json
+      - ./yarn.lock:/usr/src/app/yarn.lock
+      - ./gulpfile.babel.js:/usr/src/app/gulpfile.babel.js
+      - ./.babelrc:/usr/src/app/.babelrc
+      - ./.jscsrc:/usr/src/app/.jscsrc
+      - ./.jshintrc:/usr/src/app/.jshintrc
+      - ./.npmignore:/usr/src/app/.npmignore
+      - ./src:/usr/src/app/src
+    ports:
+      - "8081:8081"
+    expose:
+      - "9001"
+  node2:
+    container_name: node2
+    build:
+      context: ./
+      dockerfile: ./docker/node/Dockerfile
+    environment:
+        NODE_ENV: prod
+        EXPRESS_PORT: 8082
+    links:
+      - redis
+    volumes:
+      - ./package.json:/usr/src/app/package.json
+      - ./yarn.lock:/usr/src/app/yarn.lock
+      - ./gulpfile.babel.js:/usr/src/app/gulpfile.babel.js
+      - ./.babelrc:/usr/src/app/.babelrc
+      - ./.jscsrc:/usr/src/app/.jscsrc
+      - ./.jshintrc:/usr/src/app/.jshintrc
+      - ./.npmignore:/usr/src/app/.npmignore
+      - ./src:/usr/src/app/src
+    ports:
+      - "8082:8082"
+    expose:
+      - "9001"
+  node3:
+    container_name: node3
+    build:
+      context: ./
+      dockerfile: ./docker/node/Dockerfile
+    environment:
+        NODE_ENV: prod
+        EXPRESS_PORT: 8083
+    links:
+      - redis
+    volumes:
+      - ./scripts:/usr/src/app
+      - ./package.json:/usr/src/app/package.json
+      - ./yarn.lock:/usr/src/app/yarn.lock
+      - ./gulpfile.babel.js:/usr/src/app/gulpfile.babel.js
+      - ./.babelrc:/usr/src/app/.babelrc
+      - ./.jscsrc:/usr/src/app/.jscsrc
+      - ./.jshintrc:/usr/src/app/.jshintrc
+      - ./.npmignore:/usr/src/app/.npmignore
+      - ./src:/usr/src/app/src
+    ports:
+      - "8083:8083"
+    expose:
+      - "9001"
+  nginx:
+    container_name: rewards_nginx
+    build:
+      context: ./
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "80:80"
+    environment:
+        NODE_ENV: prod
+  elasticsearch:
+    container_name: rewards_elasticsearch
+    image: elasticsearch:2.4
+    command: elasticsearch -Des.network.host=0.0.0.0
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./var/es_data:/usr/share/elasticsearch/data
+      - ./docker/elasticsearch/config:/usr/share/elasticsearch/config

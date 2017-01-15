@@ -1,0 +1,29 @@
+version: "2"
+networks:
+  isolation-network:
+    driver: bridge
+services:
+  redis:
+    networks:
+      - isolation-network
+  node1:
+    environment:
+        NODE_ENV: dev
+    networks:
+      - isolation-network
+  node2:
+    environment:
+        NODE_ENV: dev
+    networks:
+      - isolation-network
+  node3:
+    environment:
+        NODE_ENV: dev
+    networks:
+      - isolation-network
+  nginx:
+    environment:
+        NODE_ENV: dev
+  elasticsearch:
+    networks:
+      - isolation-network
