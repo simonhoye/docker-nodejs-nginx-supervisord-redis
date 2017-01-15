@@ -16,14 +16,11 @@ services:
         NODE_ENV: dev
     networks:
       - isolation-network
-  node3:
+  nginx:
     environment:
         NODE_ENV: dev
     networks:
       - isolation-network
-  nginx:
-    environment:
-        NODE_ENV: dev
   elasticsearch:
     networks:
       - isolation-network

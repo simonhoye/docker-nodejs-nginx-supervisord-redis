@@ -13,7 +13,8 @@ services:
     environment:
         NODE_ENV: prod
         EXPRESS_PORT: 8081
-    links:
+        REDIS_PORT: 6379
+    depends_on:
       - redis
     volumes:
       - ./package.json:/usr/src/app/package.json
@@ -23,9 +24,11 @@ services:
       - ./.jscsrc:/usr/src/app/.jscsrc
       - ./.jshintrc:/usr/src/app/.jshintrc
       - ./.npmignore:/usr/src/app/.npmignore
+      - ./server.js:/usr/src/app/server.js
       - ./src:/usr/src/app/src
     ports:
       - "8081:8081"
+      - "9001:9001"
     expose:
       - "9001"
   node2:
@@ -36,7 +39,8 @@ services:
     environment:
         NODE_ENV: prod
         EXPRESS_PORT: 8082
-    links:
+        REDIS_PORT: 6379
+    depends_on:
       - redis
     volumes:
       - ./package.json:/usr/src/app/package.json
@@ -46,35 +50,11 @@ services:
       - ./.jscsrc:/usr/src/app/.jscsrc
       - ./.jshintrc:/usr/src/app/.jshintrc
       - ./.npmignore:/usr/src/app/.npmignore
+      - ./server.js:/usr/src/app/server.js
       - ./src:/usr/src/app/src
     ports:
       - "8082:8082"
-    expose:
-      - "9001"
-  node3:
-    container_name: node3
-    build:
-      context: ./
-      dockerfile: ./docker/node/Dockerfile
-    environment:
-        NODE_ENV: prod
-        EXPRESS_PORT: 8083
-    links:
-      - redis
-    volumes:
-      - ./scripts:/usr/src/app
-      - ./package.json:/usr/src/app/package.json
-      - ./yarn.lock:/usr/src/app/yarn.lock
-      - ./gulpfile.babel.js:/usr/src/app/gulpfile.babel.js
-      - ./.babelrc:/usr/src/app/.babelrc
-      - ./.jscsrc:/usr/src/app/.jscsrc
-      - ./.jshintrc:/usr/src/app/.jshintrc
-      - ./.npmignore:/usr/src/app/.npmignore
-      - ./src:/usr/src/app/src
-    ports:
-      - "8083:8083"
-    expose:
-      - "9001"
+      - "9002:9001"
   nginx:
     container_name: rewards_nginx
     build:
@@ -84,6 +64,9 @@ services:
       - "80:80"
     environment:
         NODE_ENV: prod
+    depends_on:
+      - node1
+      - node2
   elasticsearch:
     container_name: rewards_elasticsearch
     image: elasticsearch:2.4

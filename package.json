@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "gulp"
+    "start": "gulp && node server.js"
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
