@@ -1,29 +1,22 @@
-const express = require('express')
-const errors = require('express-api-server').errors
-const jsonParser = require('body-parser').json()
+const express = require('express'),
+	  jsonParser = require('body-parser').json(),
+      redis = require('redis'),
+	  client = redis.createClient(6379,'redis'),
+      rewards = require('./rewards')
 
 const router = module.exports = express.Router()
 
-router.route('/rewards')
+router.route('/')
+    // GET /
+	.get((req, res, next) => {
+      client.incr('counter', (err, counter) => {
+        if(err) return next(err)
+        res.send('This page has been viewed ' + counter + ' times!')
+      })
+    })
+    
+router.route('/rewards/:member_id')
     // GET /rewards
-    .get((req, res, next) => {
-        let rewards // ...Get resources from redis...
-        res.json(rewards)
-    })
+    .get(rewards.getForMember)
     // POST /rewards
-    .post(jsonParser, (req, res, next) => {
-        if (!req.body) { return next(new errors.BadRequestError()) }
-
-        // Validate JSON body using whatever method you choose
-        var newReward = filter(req.body)
-        if (!validate(newReward)) {
-            req.log.error('Invalid reward body')
-            return next(new errors.UnprocessableEntityError('Invalid reward resource body', {errors: validate.errors}))
-        }
-
-        // ...Save to redis...
-
-        res.location(req.protocol + '://' + req.get('Host') + req.baseUrl + '/rewards/' + newReward.id)
-        res.status(201); // Created
-        res.json(newReward)
-    })
+    .post(jsonParser, rewards.postMember)

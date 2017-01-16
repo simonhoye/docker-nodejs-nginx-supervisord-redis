@@ -4,8 +4,8 @@ import gulp from 'gulp'
 import gulpLoadPlugins from 'gulp-load-plugins'
 import changed from 'gulp-changed'
 import notifier from 'node-notifier'
-import cp from 'child_process'
-
+import exec from 'gulp-exec'
+  
 const $ = gulpLoadPlugins({lazy: true})
 process.setMaxListeners(0)       // Disable max listeners for gulp
 
@@ -20,7 +20,7 @@ const build = () => {
       .pipe($.plumber({errorHandler: onError}))
       .pipe(changed('src', {extension: '.json'}))
       .pipe(gulp.dest('static'))
-      .pipe($.if(isWatching, cp.execFile('/usr/bin/env supervisorctl restart node-server')))
+      .pipe($.if(isWatching, exec('/usr/bin/env supervisorctl restart node-server')))
 }
 
 const lint = () => {
@@ -31,7 +31,7 @@ const lint = () => {
       .pipe($.jscs())
       .pipe($.jshint())
       .pipe($.jshint.reporter('jshint-stylish', {verbose: true}))
-      .pipe($.if(isWatching, cp.execFile('/usr/bin/env supervisorctl restart node-server')))
+      .pipe($.if(isWatching, exec('/usr/bin/env supervisorctl restart node-server')))
 }
 
 const watch = () => {
