@@ -16,6 +16,11 @@
 ## Next steps
 
 - visit http://localhost:9001 to view status of supervisord jobs
+
+
+![supervisor](https://github.com/chrisdlangton/node-rewards/blob/master/build/github/supervisor.png?raw=true)
+
+
 - Hit port 8080 for Node.js server directly, or port 80 to be load balanced by Nginx
 
 ## Scale
