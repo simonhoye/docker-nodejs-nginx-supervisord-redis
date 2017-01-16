@@ -15,13 +15,9 @@
 
 ## Next steps
 
-- visit http://localhost:9001 to view status of supervisord
+- visit http://localhost:9001 to view status of supervisord jobs
 - Hit port 8080 for Node.js server directly, or port 80 to be load balanced by Nginx
 
 ## Scale
 
 Change the docker-compose.yml to add more node containers (with thier own ports), enable them in the nginx.conf
-
-## Development
-
-To enable server reloading when you change project files just run `docker-compose exec node npm run watch`
