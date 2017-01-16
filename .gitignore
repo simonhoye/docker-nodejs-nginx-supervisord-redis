@@ -36,7 +36,8 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
-# data directories
+# others
 var/es_data
 var/redis_data
 .history
+nohup.out
