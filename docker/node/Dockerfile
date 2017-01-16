@@ -14,7 +14,7 @@ COPY ./docker/node/conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /usr/src/app/logs
 
 RUN npm i -g yarn \
-    && npm i gulpjs/gulp-cli -g
+    && yarn global add gulpjs/gulp#4.0
 
 COPY package.json /usr/src/app/
 COPY yarn.lock /usr/src/app/
@@ -26,8 +26,7 @@ COPY .npmignore /usr/src/app/
 COPY gulpfile.babel.js /usr/src/app/
 
 RUN yarn \
-    && npm link gulp \
-    && npm update \
-RUN npm run build
+    && yarn add gulpjs/gulp#4.0 -D \
+    && npm run build
 
 CMD [ "service", "supervisor", "start" ]

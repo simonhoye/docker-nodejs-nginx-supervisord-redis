@@ -39,3 +39,4 @@ jspm_packages
 # data directories
 var/es_data
 var/redis_data
+.history
