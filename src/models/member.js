@@ -1,9 +1,9 @@
 const model = {
-  id: 'number',
-  name: 'string',
-  vendorId: 'number',
-  vendor: 'string',
-  items: 'array'
+  id: {type:'number', required: true},
+  name: {type:'string', required: true},
+  vendorId: {type:'number', required: true},
+  vendor: {type:'string', required: true},
+  items: {type:'array', required: true}
 }
 const fields = Object.keys(model)
 
@@ -21,13 +21,12 @@ const Member = (data={}) => {
 
 const validate = (member, cb) => {
   let err = []
-  for (field in member) {
-    if (member.hasOwnProperty(field) &&
-       model.hasOwnProperty(field))
-    {
-      value = member[field]
-      expected = model[field]
-      switch (expected) {
+  for (field in model) {
+    let expected = model[field]
+    if (field in member) {
+      let invalid = false
+      let value = member[field]
+      switch (expected.type) {
         case 'str':
         case 'string':
           if (typeof value !== 'string') {
@@ -66,14 +65,14 @@ const validate = (member, cb) => {
           break;
       }
       if (invalid) {
-        err.push(`${field} is not ${expected}`)
+        //err.push(`${field} is not ${expected}`)
       }
-    } else {
-	  err.push(field + ' could not be validated')
+    } else if (expected.required) {
+	  err.push(field + ' is required')
 	}
   }
   if ('function' === typeof cb) {
-	cb.call(err, member)
+	cb.call(Member, err, member)
   }
 }
 

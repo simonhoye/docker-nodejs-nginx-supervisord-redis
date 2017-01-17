@@ -15,14 +15,17 @@ const postMember = (req, res, next) => {
   }
   var newRecord = Member(req.body)
   return memberModel.validate(newRecord, (err, member) => {
+    console.log('err: ', JSON.stringify(err, null, 3))
     if (Array.isArray(err) && err.length) {
+      console.error('400 Bad Request', 'Encountered errors', JSON.stringify(err, null, 3))
       return next(res.status(400).send({ error: err.join(', ') }))
     }
     // ...Save to redis...
+    console.log('save: ', JSON.stringify(newRecord, null, 3))
+    
     res.location(req.protocol + '://' + req.get('Host') + req.baseUrl + '/rewards/' + newRecord.id)
-    res.setHeader('Content-Type', 'application/json');
     res.status(201); // Created
-    res.json(JSON.stringify(member, null ,3))
+    res.json(member)
   })
 }
 
