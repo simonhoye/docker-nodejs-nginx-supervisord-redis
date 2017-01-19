@@ -4,10 +4,10 @@ import gulp from 'gulp'
 import gulpLoadPlugins from 'gulp-load-plugins'
 import changed from 'gulp-changed'
 import notifier from 'node-notifier'
-import exec from 'gulp-exec'
-  
-const $ = gulpLoadPlugins({lazy: true})
+import cp from 'child_process'
+
 process.setMaxListeners(0)       // Disable max listeners for gulp
+const $ = gulpLoadPlugins({lazy: true})
 
 const args = process.argv.splice(process.execArgv.length + 2)
 
@@ -20,7 +20,6 @@ const build = () => {
       .pipe($.plumber({errorHandler: onError}))
       .pipe(changed('src', {extension: '.json'}))
       .pipe(gulp.dest('static'))
-      .pipe($.if(isWatching, exec('/usr/bin/env supervisorctl restart node-server')))
 }
 
 const lint = () => {
@@ -31,13 +30,23 @@ const lint = () => {
       .pipe($.jscs())
       .pipe($.jshint())
       .pipe($.jshint.reporter('jshint-stylish', {verbose: true}))
-      .pipe($.if(isWatching, exec('/usr/bin/env supervisorctl restart node-server')))
+}
+
+const restart = () => {
+  return cp.exec('/usr/bin/env supervisorctl restart node-server', (err, stdout, stderr) => {
+    if (err) {
+      console.error(`exec error: ${err}`)
+      return
+    }
+    stdout && console.log(`stdout: ${stdout}`)
+    stderr && console.log(`stderr: ${stderr}`)
+  })
 }
 
 const watch = () => {
-  let isWatching = true
+  isWatching = true
   gulp.watch(['./src/**/*.json'], build)
-  gulp.watch(['./src/**/*.js', './server.js'], lint)
+  gulp.watch(['./src/**/*.js', './server.js'], restart)
 }
 
 const onError = err => {
@@ -60,6 +69,7 @@ const verbosePrintFiles = taskName => {
 
 gulp.task('watch', watch)
 gulp.task('lint', lint)
+gulp.task('restart', restart)
 gulp.task('build', build)
 gulp.task('default', 
     gulp.parallel('build', 'lint')

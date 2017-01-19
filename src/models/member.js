@@ -1,18 +1,33 @@
 const model = {
-  id: {type:'number', required: true},
-  name: {type:'string', required: true},
-  vendorId: {type:'number', required: true},
-  vendor: {type:'string', required: true},
-  items: {type:'array', required: true}
+  id: {
+    type: 'number',
+    required: true
+  },
+  name: {
+    type: 'string',
+    required: true
+  },
+  vendorId: {
+    type: 'number',
+    required: true
+  },
+  vendor: {
+    type: 'string',
+    required: true
+  },
+  items: {
+    type: 'array',
+    required: true
+  }
 }
 const fields = Object.keys(model)
 
-const Member = (data={}) => {
+const Member = (data = {}) => {
   let newMember = {}
   for (key in data) {
-	newMember[key] = undefined
-	if (fields.indexOf(key) !== -1) {
-	  let value = data[key]
+    newMember[key] = undefined
+    if (fields.indexOf(key) !== -1) {
+      let value = data[key]
       newMember[key] = value
     }
   }
@@ -27,53 +42,50 @@ const validate = (member, cb) => {
       let invalid = false
       let value = member[field]
       switch (expected.type) {
-        case 'str':
-        case 'string':
-          if (typeof value !== 'string') {
-            invalid = true
-            continue
-          }
-          break;
-        case 'int':
-        case 'integer':
-        case 'number':
-          if (typeof value !== 'number') {
-            invalid = true
-            continue
-          }
-          break;
-        case 'arr':
-        case 'array':
-          if (!Array.isArray(value)) {
-            invalid = true
-            continue
-          }
-          break;
-        case 'bool':
-        case 'boolean':
-          if (typeof value !== 'boolean') {
-            invalid = true
-            continue
-          }
-          break;
-        case 'obj':
-        case 'object':
-          if (typeof value !== 'object') {
-            invalid = true
-            continue
-          }
-          break;
+      case 'str':
+      case 'string':
+        if (typeof value !== 'string') {
+          invalid = true
+        }
+        break;
+      case 'int':
+      case 'integer':
+      case 'number':
+        if (typeof value !== 'number') {
+          invalid = true
+        }
+        break;
+      case 'arr':
+      case 'array':
+        if (!Array.isArray(value)) {
+          invalid = true
+        }
+        break;
+      case 'bool':
+      case 'boolean':
+        if (typeof value !== 'boolean') {
+          invalid = true
+        }
+        break;
+      case 'obj':
+      case 'object':
+        if (typeof value !== 'object') {
+          invalid = true
+        }
+        break;
       }
       if (invalid) {
-        //err.push(`${field} is not ${expected}`)
+        err.push(`${field} is not of type ${expected.type}`)
       }
     } else if (expected.required) {
-	  err.push(field + ' is required')
-	}
+      err.push(field + ' is required')
+    }
   }
   if ('function' === typeof cb) {
-	cb.call(Member, err, member)
+    cb.call(Member, err, member)
   }
 }
 
-module.exports = { fields, validate, Member }
+module.exports = {
+  fields, validate, Member
+}
