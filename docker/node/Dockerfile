@@ -15,10 +15,11 @@ RUN npm i -g yarn \
 
 # create the logs dir
 RUN mkdir -p /usr/src/app/logs
+RUN mkdir -p /usr/src/app/src
 
+# Copy files needed for the build
 COPY package.json /usr/src/app/
 COPY yarn.lock /usr/src/app/
-COPY server.js /usr/src/app/
 COPY .babelrc /usr/src/app/
 COPY .jscsrc /usr/src/app/
 COPY .jshintrc /usr/src/app/
@@ -26,7 +27,7 @@ COPY .npmignore /usr/src/app/
 COPY gulpfile.babel.js /usr/src/app/
 
 RUN yarn \
-    && yarn add gulpjs/gulp#4.0 -D \
+    && yarn global add gulpjs/gulp#4.0 \
     && npm run build
 
 CMD [ "service", "supervisor", "start" ]

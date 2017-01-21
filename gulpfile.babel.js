@@ -15,11 +15,20 @@ let isVerbose = args.verbose     // Enable extra verbose logging with --verbose
 let isProduction = args.prod     // Run extra steps with production flag --prod
 let isWatching = false
 
-const build = () => {
+const buildJS = () => {
+  return gulp.src('src/**/*.js')
+      .pipe($.plumber({errorHandler: onError}))
+      .pipe(changed('src', {extension: '.js'}))
+      // Do your build things here
+      .pipe(gulp.dest('build'))
+}
+
+const buildJSON = () => {
   return gulp.src('src/**/*.json')
       .pipe($.plumber({errorHandler: onError}))
       .pipe(changed('src', {extension: '.json'}))
-      .pipe(gulp.dest('static'))
+      // Do your build things here
+      .pipe(gulp.dest('build'))
 }
 
 const lint = () => {
@@ -45,8 +54,8 @@ const restart = () => {
 
 const watch = () => {
   isWatching = true
-  gulp.watch(['./src/**/*.json'], build)
-  gulp.watch(['./src/**/*.js', './server.js'], restart)
+  gulp.watch(['./src/**/*.json'], buildJSON)
+  gulp.watch(['./src/**/*.js'], gulp.series(gulp.parallel('build:js', 'build:json'), 'restart'))
 }
 
 const onError = err => {
@@ -70,7 +79,9 @@ const verbosePrintFiles = taskName => {
 gulp.task('watch', watch)
 gulp.task('lint', lint)
 gulp.task('restart', restart)
-gulp.task('build', build)
-gulp.task('default', 
-    gulp.parallel('build', 'lint')
-)
+gulp.task('build:js', buildJS)
+gulp.task('build:json', buildJSON)
+gulp.task('build', gulp.series('lint',
+    gulp.parallel('build:js', 'build:json')
+))
+gulp.task('default', gulp.series('build', 'watch'))

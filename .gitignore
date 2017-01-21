@@ -41,3 +41,4 @@ var/es_data
 var/redis_data
 .history
 nohup.out
+build/

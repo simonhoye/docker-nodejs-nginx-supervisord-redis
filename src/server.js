@@ -3,12 +3,12 @@ const express = require('express'),
       app = express(),
       cluster = require('cluster'),
       notifier = require('node-notifier'),
-      router = require('./src/routes')
+      router = require('./routes')
 
 if (cluster.isMaster) {
   // Fork for each CPU
   const cpuCount = require('os').cpus().length
-  Array(cpuCount).fill(0).forEach(()=>cluster.fork())
+  Array(cpuCount).fill(0).forEach(() => cluster.fork())
   // Replace the dead worker. Sorry Abe, we're not sentimental
   cluster.on('exit', worker => cluster.fork())
 } else {

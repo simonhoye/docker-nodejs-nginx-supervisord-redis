@@ -53,46 +53,30 @@ It will simply choose a random item from your known past purchases and reward yo
 ### Create a member record (first purchase)
 
 ```
-curl -i -X POST \
-   -H "Content-Type:application/json" \
-   -d \
-'{
-   "id":61163,
-   "name":"Chris Langton",
-   "vendor":"Guzzle Stop",
-   "vendorId":931683168,
-   "items":[
-      "Unleaded Petrol E10",
-      "Dare iced coffee 750ml"
-   ]
-}' \
- 'http://localhost:8080/rewards/61163'
+docker-compose exec node curl -i -X POST -H "Content-Type:application/json" -d @./src/fixtures/member-61163.json 'http://node:8080/rewards/61163'
 ```
 
 ### Check the items purchased for a member
 
 ```
-curl -i -X GET \
- 'http://ubuntu.local:8080/purchases/61163'
+docker-compose exec node curl -i -X GET 'http://node:8080/purchases/61163'
 ```
 
 ### Add some additional purchases
 
 ```
-curl -i -X PUT \
+docker-compose exec node curl -i -X PUT \
    -H "Content-Type:application/json" \
    -d \
 '[
   "Unleaded Petrol 98",
   "Dare iced coffee 300ml"
 ]' \
- 'http://ubuntu.local:8080/purchases/61163'
+ 'http://node:8080/purchases/61163'
 ```
 
 ### Check if you receive a reward item
 
 ```
-curl -i -X GET \
-   -H "Content-Type:application/json" \
- 'http://ubuntu.local:8080/rewards/61163'
+docker-compose exec node curl -i -X GET -H "Content-Type:application/json" 'http://node:8080/rewards/61163'
 ```

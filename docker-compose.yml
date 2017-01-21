@@ -22,7 +22,6 @@ services:
       - ./.jscsrc:/usr/src/app/.jscsrc
       - ./.jshintrc:/usr/src/app/.jshintrc
       - ./.npmignore:/usr/src/app/.npmignore
-      - ./server.js:/usr/src/app/server.js
       - ./src:/usr/src/app/src
     ports:
       - "8080:8080"
