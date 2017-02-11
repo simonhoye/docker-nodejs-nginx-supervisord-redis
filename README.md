@@ -1,4 +1,4 @@
-# node-rewards
+# docker-nodejs-nginx-supervisord-redis
 
 ## What this is
 
@@ -31,7 +31,7 @@
 
 Change the docker-compose.yml to add more node containers (with thier own ports), enable them in the nginx.conf
 
-## Running without docker on Ubuntu
+## Setup for Ubuntu (without docker) or WSL (Windows Subsystem for Linux)
 
 - Install redis `apt-get install redis-server -y`
 - Edit `/etc/hosts` to add "redis" hostname for 127.0.0.1
@@ -45,38 +45,3 @@ Change the docker-compose.yml to add more node containers (with thier own ports)
 - Start supervisor `nohup /usr/bin/supervisord -c /path/to/node-rewards/docker/node/conf/supervisord.conf &`
 - Check the node server and npm watch services http://localhost:9001/ (username and password are configured in supervisor.conf)
 
-## Rewards API usage
-
-As a more technical example albeit quite an unimaginative rewards program example.
-It will simply choose a random item from your known past purchases and reward you that item every 10 checkouts.
-
-### Create a member record (first purchase)
-
-```
-docker-compose exec node curl -i -X POST -H "Content-Type:application/json" -d @./src/fixtures/member-61163.json 'http://node:8080/rewards/61163'
-```
-
-### Check the items purchased for a member
-
-```
-docker-compose exec node curl -i -X GET 'http://node:8080/purchases/61163'
-```
-
-### Add some additional purchases
-
-```
-docker-compose exec node curl -i -X PUT \
-   -H "Content-Type:application/json" \
-   -d \
-'[
-  "Unleaded Petrol 98",
-  "Dare iced coffee 300ml"
-]' \
- 'http://node:8080/purchases/61163'
-```
-
-### Check if you receive a reward item
-
-```
-docker-compose exec node curl -i -X GET -H "Content-Type:application/json" 'http://node:8080/rewards/61163'
-```

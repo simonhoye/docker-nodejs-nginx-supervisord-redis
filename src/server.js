@@ -2,7 +2,6 @@ const express = require('express'),
       http = require('http'),
       app = express(),
       cluster = require('cluster'),
-      notifier = require('node-notifier'),
       router = require('./routes')
 
 if (cluster.isMaster) {
