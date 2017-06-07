@@ -41,7 +41,7 @@ Change the docker-compose.yml to add more node containers (with thier own ports)
 - Start redis `service redis-server start` 
 - Install supervisor `apt-get install supervisor -y`
 - Run `mkdir /usr/src/app`
-- Create a symbolic link to you cloned repo `ln -s /path/to/node-rewards /usr/src/app`
-- Start supervisor `nohup /usr/bin/supervisord -c /path/to/node-rewards/docker/node/conf/supervisord.conf &`
+- Create a symbolic link to you cloned repo `ln -s /path/to/repo/docker-nodejs-nginx-supervisord-redis /usr/src/app`
+- Start supervisor `nohup /usr/bin/supervisord -c /path/to/repo/docker-nodejs-nginx-supervisord-redis/docker/node/conf/supervisord.conf &`
 - Check the node server and npm watch services http://localhost:9001/ (username and password are configured in supervisor.conf)
 
